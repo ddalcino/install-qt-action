@@ -43,6 +43,10 @@ jobs:
             requested: "5.15"
           - version: "6.3.2"  # Qt 6.3 is not an LTS version, so '6.3.*' always resolves to '6.3.2'
             requested: "6.3.*"
+        arch:
+          - ""                  # use the default arch
+          - wasm_32             # Does not exist on 5.9.*. Requires parallel desktop installation on Qt6+
+          - android_arm64_v8a   # Use 'android' on 5.14-5.15. Requires parallel desktop installation on Qt6+
         cache:
           - cached
           - uncached
@@ -51,6 +55,8 @@ jobs:
         exclude:
           - os: ubuntu-18.04
             qt: {version: "6.3.2", requested: "6.3.*"}
+          - arch: wasm_32
+            qt: {version: "5.9.0", requested: "5.9.0"}
     steps:
       - uses: actions/checkout@v3
 
@@ -77,6 +83,10 @@ jobs:
           version: ${{ matrix.qt.requested }}
           tools: tools_ifw tools_qtcreator,qt.tools.qtcreator
           cache: ${{ matrix.cache == 'cached' }}
+          # Target: 'android' if arch starts with 'android', else 'desktop'
+          target: ${{ startsWith(matrix.arch, 'android') && 'android' || 'desktop' }}
+          # Arch: If qt.version starts with 5.15 and arch starts with android, then arch is 'android', else 'matrix.arch'
+          arch: ${{ (startsWith(matrix.qt.version, '5.15') && startsWith(matrix.arch, 'android')) && 'android' || matrix.arch }}
 
       - name: Install Qt6 with options
         if: startsWith(matrix.qt.version, '6')
@@ -87,6 +97,10 @@ jobs:
           version: ${{ matrix.qt.requested }}
           tools: tools_ifw tools_qtcreator,qt.tools.qtcreator
           cache: ${{ matrix.cache == 'cached' }}
+          # Target: 'android' if arch starts with 'android', else 'desktop'
+          target: ${{ startsWith(matrix.arch, 'android') && 'android' || 'desktop' }}
+          # Arch: If qt.version starts with 5.15 and arch starts with android, then arch is 'android', else 'matrix.arch'
+          arch: ${{ (startsWith(matrix.qt.version, '5.15') && startsWith(matrix.arch, 'android')) && 'android' || matrix.arch }}
 
       - name: Configure test project on windows
         if: startsWith(matrix.os, 'windows')
