@@ -50,7 +50,7 @@ jobs:
         # Ubuntu 18 is not a supported target for Qt 6: https://www.qt.io/blog/qt6-development-hosts-and-targets
         exclude:
           - os: ubuntu-18.04
-            qt: {version: "6.3.2", requested: "6.3.2"}
+            qt: {version: "6.3.2", requested: "6.3.*"}
     steps:
       - uses: actions/checkout@v3
 
