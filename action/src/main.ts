@@ -30,12 +30,35 @@ const execPython = async (command: string, args: readonly string[]): Promise<num
   return exec(`${python} -m ${command} ${args.join(" ")}`);
 };
 
-const locateQtArchDir = (installDir: string): string => {
+interface InstalledQtInfo {
+  /* The architecture directory that contains the requested Qt */
+  primaryArchDir: string;
+  /* The version of Qt installed */
+  installedVersion: string;
+  /* Any other Qt architecture directories present.
+     If multiple versions/architectures of Qt are installed, then this field contains them */
+  allArchDirectories: string[];
+}
+
+const getInstalledQtInfo = (installDir: string): InstalledQtInfo => {
   // For 6.4.2/gcc, qmake is at 'installDir/6.4.2/gcc_64/bin/qmake'.
   // This makes a list of all the viable arch directories that contain a qmake file.
   const qtArchDirs = glob
     .sync(`${installDir}/[0-9]*/*/bin/qmake*`)
     .map((s) => s.replace(/\/bin\/qmake[^/]*$/, ""));
+
+  const archDirToVersion = (archDir: string): string => {
+    const versionDir = archDir.match(/(\d+\.\d+(\.\d+)?)\/[^/]+$/)?.[1];
+    if (!versionDir) {
+      throw Error(`Expected a Qt version to exist in the directory '${archDir}'`);
+    }
+    return versionDir === "5.9" ? "5.9.0" : versionDir;
+  };
+  const wrapResults = (archDir: string): InstalledQtInfo => ({
+    primaryArchDir: archDir,
+    installedVersion: archDirToVersion(archDir),
+    allArchDirectories: qtArchDirs,
+  });
 
   // For Qt6 mobile and wasm installations, a standard desktop Qt installation
   // must exist alongside the requested architecture.
@@ -44,13 +67,11 @@ const locateQtArchDir = (installDir: string): string => {
     p.match(/6\.\d+\.\d+\/(android[^/]*|ios|wasm[^/]*)$/)
   );
   if (requiresParallelDesktop.length) {
-    // NOTE: if multiple mobile/wasm installations coexist, this may not select the desired directory
-    return requiresParallelDesktop[0];
+    return wrapResults(requiresParallelDesktop[0]);
   } else if (!qtArchDirs.length) {
     throw Error(`Failed to locate a Qt installation directory in  ${installDir}`);
   } else {
-    // NOTE: if multiple Qt installations exist, this may not select the desired directory
-    return qtArchDirs[0];
+    return wrapResults(qtArchDirs[0]);
   }
 };
 
@@ -354,7 +375,8 @@ const run = async (): Promise<void> => {
         core.exportVariable("IQTA_TOOLS", nativePath(`${inputs.dir}/Tools`));
       }
       if (!inputs.toolsOnly) {
-        const qtPath = nativePath(locateQtArchDir(inputs.dir));
+        const { primaryArchDir, installedVersion } = getInstalledQtInfo(inputs.dir);
+        const qtPath = nativePath(primaryArchDir);
         if (process.platform === "linux") {
           setOrAppendEnvVar("LD_LIBRARY_PATH", nativePath(`${qtPath}/lib`));
         }
@@ -362,7 +384,7 @@ const run = async (): Promise<void> => {
           setOrAppendEnvVar("PKG_CONFIG_PATH", nativePath(`${qtPath}/lib/pkgconfig`));
         }
         // If less than qt6, set qt5_dir variable, otherwise set qt6_dir variable
-        if (compareVersions(inputs.version, "<", "6.0.0")) {
+        if (compareVersions(installedVersion, "<", "6.0.0")) {
           core.exportVariable("Qt5_Dir", qtPath); // Incorrect name that was fixed, but kept around so it doesn't break anything
           core.exportVariable("Qt5_DIR", qtPath);
         } else {
