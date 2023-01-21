@@ -375,7 +375,7 @@ const run = async (): Promise<void> => {
         core.exportVariable("IQTA_TOOLS", nativePath(`${inputs.dir}/Tools`));
       }
       if (!inputs.toolsOnly) {
-        const { primaryArchDir, installedVersion } = getInstalledQtInfo(inputs.dir);
+        const { primaryArchDir } = getInstalledQtInfo(inputs.dir);
         const qtPath = nativePath(primaryArchDir);
         if (process.platform === "linux") {
           setOrAppendEnvVar("LD_LIBRARY_PATH", nativePath(`${qtPath}/lib`));
@@ -384,7 +384,7 @@ const run = async (): Promise<void> => {
           setOrAppendEnvVar("PKG_CONFIG_PATH", nativePath(`${qtPath}/lib/pkgconfig`));
         }
         // If less than qt6, set qt5_dir variable, otherwise set qt6_dir variable
-        if (compareVersions(installedVersion, "<", "6.0.0")) {
+        if (compareVersions(inputs.version, "<", "6.0.0")) {
           core.exportVariable("Qt5_Dir", qtPath); // Incorrect name that was fixed, but kept around so it doesn't break anything
           core.exportVariable("Qt5_DIR", qtPath);
         } else {
