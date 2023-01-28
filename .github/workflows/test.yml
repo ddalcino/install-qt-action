@@ -72,7 +72,7 @@ jobs:
           npm run build
 
       - name: Install Qt5 with options
-        if: matrix.qt.version && startsWith(matrix.qt.version, '5')
+        if: ${{ matrix.qt.version && startsWith(matrix.qt.version, '5') }}
         uses: ./
         with:
           modules: qtwebengine
@@ -81,7 +81,7 @@ jobs:
           cache: ${{ matrix.cache == 'cached' }}
 
       - name: Install Qt6 with options
-        if: matrix.qt.version && startsWith(matrix.qt.version, '6')
+        if: ${{ matrix.qt.version && startsWith(matrix.qt.version, '6') }}
         uses: ./
         with:
           # In Qt 6.2.0+, qtwebengine requires qtpositioning and qtwebchannel
@@ -91,7 +91,7 @@ jobs:
           cache: ${{ matrix.cache == 'cached' }}
 
       - name: Configure test project on windows
-        if: matrix.qt.version && startsWith(matrix.os, 'windows')
+        if: ${{ matrix.qt.version && startsWith(matrix.os, 'windows') }}
         env:
           QT_VERSION: ${{ matrix.qt.version }}
         run: |
@@ -102,7 +102,7 @@ jobs:
         shell: cmd
 
       - name: Configure test project on unix
-        if: matrix.qt.version && !startsWith(matrix.os, 'windows')
+        if: ${{ matrix.qt.version && !startsWith(matrix.os, 'windows') }}
         env:
           QT_VERSION: ${{ matrix.qt.version }}
         run: |
@@ -116,7 +116,7 @@ jobs:
         shell: bash
 
       - name: Install tools with options
-        if: !matrix.qt.version
+        if: ${{ !matrix.qt.version }}
         uses: ./
         with:
           tools-only: true
@@ -124,7 +124,7 @@ jobs:
           cache: ${{ matrix.cache == 'cached' }}
 
       - name: Test installed tools
-        if: !matrix.qt.version
+        if: ${{ !matrix.qt.version }}
         env:
           QTIFW_BIN_PATH: "./Qt/Tools/QtInstallerFramework/*/bin/"
           # Ternary expression: <condition> && <true-value> || <false-value>
