@@ -46,6 +46,9 @@ jobs:
         cache:
           - cached
           - uncached
+        tools_only:
+          - true
+          - false
 
         # Ubuntu 18 is not a supported target for Qt 6: https://www.qt.io/blog/qt6-development-hosts-and-targets
         exclude:
@@ -70,7 +73,7 @@ jobs:
           npm run build
 
       - name: Install Qt5 with options
-        if: startsWith(matrix.qt.version, '5')
+        if: startsWith(matrix.qt.version, '5') && !matrix.tools_only
         uses: ./
         with:
           modules: qtwebengine
@@ -79,7 +82,7 @@ jobs:
           cache: ${{ matrix.cache == 'cached' }}
 
       - name: Install Qt6 with options
-        if: startsWith(matrix.qt.version, '6')
+        if: startsWith(matrix.qt.version, '6') && !matrix.tools_only
         uses: ./
         with:
           # In Qt 6.2.0+, qtwebengine requires qtpositioning and qtwebchannel
@@ -89,7 +92,7 @@ jobs:
           cache: ${{ matrix.cache == 'cached' }}
 
       - name: Configure test project on windows
-        if: startsWith(matrix.os, 'windows')
+        if: startsWith(matrix.os, 'windows') && !matrix.tools_only
         env:
           QT_VERSION: ${{ matrix.qt.version }}
         run: |
@@ -100,7 +103,7 @@ jobs:
         shell: cmd
 
       - name: Configure test project on unix
-        if: (!startsWith(matrix.os, 'windows'))
+        if: (!startsWith(matrix.os, 'windows')) && !matrix.tools_only
         env:
           QT_VERSION: ${{ matrix.qt.version }}
         run: |
@@ -112,3 +115,27 @@ jobs:
           fi
           qmake
         shell: bash
+
+      - name: Install tools with options
+        if: matrix.tools_only
+        uses: ./
+        with:
+          tools-only: true
+          tools: tools_ifw tools_qtcreator,qt.tools.qtcreator
+          cache: ${{ matrix.cache == 'cached' }}
+
+      - name: Test installed tools
+        if: matrix.tools_only
+        env:
+          QTIFW_BIN_PATH: "./Qt/Tools/QtInstallerFramework/*/bin/"
+          # Ternary expression: <condition> && <true-value> || <false-value>
+          QTCREATOR_BIN_PATH: ${{ startsWith(matrix.os, 'macos') && "./Qt/Qt Creator.app/Contents/MacOS/" || "./Qt/Tools/QtCreator/bin/" }}
+        shell: bash
+        run: |
+          # Check if QtIFW is installed
+          ls "${QTIFW_BIN_PATH}"
+          "${QTIFW_BIN_PATH}archivegen" --version
+  
+          # Check if QtCreator is installed: QtCreator includes the CLI program 'qbs' on all 3 platforms
+          ls "${QTCREATOR_BIN_PATH}"
+          "${QTCREATOR_BIN_PATH}qbs" --version
