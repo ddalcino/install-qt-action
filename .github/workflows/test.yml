@@ -126,20 +126,17 @@ jobs:
       - name: Test installed tools
         if: ${{ !matrix.qt.version }}
         env:
-          QTIFW_BIN_PATH: "./Qt/Tools/QtInstallerFramework/*/bin/"
           # Ternary expression: <condition> && <true-value> || <false-value>
-          QTCREATOR_BIN_PATH: ${{ startsWith(matrix.os, 'macos') && './Qt/Qt Creator.app/Contents/MacOS/' || './Qt/Tools/QtCreator/bin/' }}
+          QTCREATOR_BIN_PATH: ${{ startsWith(matrix.os, 'macos') && '../Qt/Qt Creator.app/Contents/MacOS/' || '../Qt/Tools/QtCreator/bin/' }}
         shell: bash
         run: |
           set +x
           echo "GITHUB_WORKSPACE == ${GITHUB_WORKSPACE}"
-#          ls ../
-#          ls ../Qt
           ls ../Qt/Tools
           # Check if QtIFW is installed
           ls ../Qt/Tools/QtInstallerFramework/*/bin/
           ../Qt/Tools/QtInstallerFramework/*/bin/archivegen --version
   
           # Check if QtCreator is installed: QtCreator includes the CLI program 'qbs' on all 3 platforms
-          ls ".${QTCREATOR_BIN_PATH}"
-          ".${QTCREATOR_BIN_PATH}qbs" --version
+          ls "${QTCREATOR_BIN_PATH}"
+          "${QTCREATOR_BIN_PATH}qbs" --version
