@@ -129,7 +129,7 @@ jobs:
         env:
           QTIFW_BIN_PATH: "./Qt/Tools/QtInstallerFramework/*/bin/"
           # Ternary expression: <condition> && <true-value> || <false-value>
-          QTCREATOR_BIN_PATH: ${{ startsWith(matrix.os, 'macos') && "./Qt/Qt Creator.app/Contents/MacOS/" || "./Qt/Tools/QtCreator/bin/" }}
+          QTCREATOR_BIN_PATH: ${{ startsWith(matrix.os, 'macos') && './Qt/Qt Creator.app/Contents/MacOS/' || './Qt/Tools/QtCreator/bin/' }}
         shell: bash
         run: |
           # Check if QtIFW is installed
