@@ -131,7 +131,7 @@ jobs:
           qbs --version
 
       - name: Test installed tools - Mac/Linux
-        if: ${{ !matrix.qt.version && !startsWith(matrix.os, 'windows') }}
+        if: ${{ !matrix.qt.version }}
         shell: bash
         run: |
           # Check if QtIFW is installed
