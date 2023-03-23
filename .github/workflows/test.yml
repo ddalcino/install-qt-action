@@ -123,10 +123,16 @@ jobs:
         shell: bash
         run: |
           echo "Path: ${PATH}"
+          if [[ ${{ matrix.os }} == 'windows' ]]; then
+            export EXE=".exe"
+          else
+            export EXE=""
+          fi
+          
           # Check if QtIFW is installed
-          which archivegen
-          archivegen --version
+          which "archivegen${EXE}"
+          "archivegen${EXE}" --version
   
           # Check if QtCreator is installed: QtCreator includes the CLI program 'qbs' on all 3 platforms
-          which qbs
-          qbs --version
+          which "qbs{EXE}"
+          "qbs{EXE}" --version
