@@ -12,6 +12,8 @@ import { compare, CompareOperator } from "compare-versions";
 
 const nativePath = process.platform === "win32" ? path.win32.normalize : path.normalize;
 
+const PATH_CONCAT_SEPARATOR = process.platform === "win32" ? ";" : ":";
+
 const compareVersions = (v1: string, op: CompareOperator, v2: string): boolean => {
   return compare(v1, v2, op);
 };
@@ -20,7 +22,7 @@ const setOrAppendEnvVar = (name: string, value: string): void => {
   const oldValue = process.env[name];
   let newValue = value;
   if (oldValue) {
-    newValue = `${oldValue}:${newValue}`;
+    newValue = `${oldValue}${PATH_CONCAT_SEPARATOR}${newValue}`;
   }
   core.exportVariable(name, newValue);
 };
@@ -29,7 +31,7 @@ const toolsPaths = (installDir: string): string =>
   ["Tools/**/bin", "*.app/Contents/MacOS", "*.app/**/bin"]
     .flatMap((p: string): string[] => glob.sync(`${installDir}/${p}`))
     .map(nativePath)
-    .join(":");
+    .join(PATH_CONCAT_SEPARATOR);
 
 const execPython = async (command: string, args: readonly string[]): Promise<number> => {
   const python = process.platform === "win32" ? "python" : "python3";
