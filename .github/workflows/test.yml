@@ -118,21 +118,26 @@ jobs:
           tools: tools_ifw tools_qtcreator,qt.tools.qtcreator
           cache: ${{ matrix.cache == 'cached' }}
 
-      - name: Test installed tools
-        if: ${{ !matrix.qt.version }}
+      - name: Test installed tools - Win
+        if: ${{ !matrix.qt.version && startsWith(matrix.os, 'windows') }}
+        shell: cmd
+        run: |
+          rem Check if QtIFW is installed
+          which archivegen
+          archivegen --version
+          
+          rem Check if QtCreator is installed: QtCreator includes the CLI program 'qbs' on all 3 platforms
+          which qbs
+          qbs --version
+
+      - name: Test installed tools - Mac/Linux
+        if: ${{ !matrix.qt.version && !startsWith(matrix.os, 'windows') }}
         shell: bash
         run: |
-          echo "Path: ${PATH}"
-          if [[ ${{ matrix.os }} == 'windows' ]]; then
-            export EXE=".exe"
-          else
-            export EXE=""
-          fi
-          
           # Check if QtIFW is installed
-          which "archivegen${EXE}"
-          "archivegen${EXE}" --version
-  
+          which archivegen
+          archivegen --version
+          
           # Check if QtCreator is installed: QtCreator includes the CLI program 'qbs' on all 3 platforms
-          which "qbs{EXE}"
-          "qbs{EXE}" --version
+          which qbs
+          qbs --version
