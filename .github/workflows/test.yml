@@ -106,7 +106,13 @@ jobs:
         run: |
           cd tests/TestWithModules
           for /f "delims=" %%d in ( 'vswhere.exe -latest -property installationPath' ) do @( call "%%d\VC\Auxiliary\Build\vcvars64.bat" )
-          IF "%QT_VERSION:~0,1%"=="5" ( dir %Qt5_DIR%\lib\cmake ) ELSE ( dir %Qt6_DIR%\lib\cmake )
+          REM the next line won't work yet, but it should print the contents of arch/lib/cmake/Qt5:
+          REM IF "%QT_VERSION:~0,1%"=="5" ( dir %Qt5_DIR% ) ELSE ( dir %Qt6_DIR% )
+          if "%QT_VERSION:~0,1%"=="5" ( 
+            cmake -S . -B ./build
+          ) else ( 
+            cmake -S . -B ./build -DCMAKE_PREFIX_PATH=%Qt6_DIR%
+          )
           qmake
         shell: cmd
 
@@ -117,9 +123,15 @@ jobs:
         run: |
           cd tests/TestWithModules
           if [[ $QT_VERSION == 6* ]]; then
-            ls "$Qt6_DIR/lib/cmake"
+            # the next line won't work yet, but it should print the contents of arch/lib/cmake/Qt6:
+            #ls "${Qt6_DIR}"
+          
+            # Qt 6 does not look for `Qt6_DIR` env variable. W  e need to pass Qt_dir to cmake in CMAKE_PREFIX_PATH
+            cmake -S . -B ./build -DCMAKE_PREFIX_PATH="${Qt6_DIR}"
           else
-            ls "$Qt5_DIR/lib/cmake"
+            # the next line won't work yet, but it should print the contents of arch/lib/cmake/Qt5:
+            #ls "${Qt5_DIR}"
+            cmake -S . -B ./build
           fi
           qmake
         shell: bash
