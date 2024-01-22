@@ -103,12 +103,19 @@ jobs:
 
       - name: Install Qt with options and default aqtversion
         if: ${{ !matrix.aqtversion && matrix.qt.version }}
+        id: installed_qt_default
         uses: ./
         with:
           modules: ${{ matrix.qt.modules }}
           version: ${{ matrix.qt.requested }}
           tools: tools_ifw tools_qtcreator,qt.tools.qtcreator
           cache: ${{ matrix.cache == 'cached' }}
+
+      - name: Print contents of GITHUB_OUTPUT
+        if: ${{ !matrix.aqtversion && matrix.qt.version }}
+        shell: bash
+        run: |
+          echo "Output ${{ steps.installed_qt_default.outputs.qtPath }}"
 
       - name: Install Qt with options and specified aqtversion
         if: ${{ matrix.aqtversion && matrix.qt.version }}
