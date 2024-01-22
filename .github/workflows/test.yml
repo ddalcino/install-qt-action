@@ -116,6 +116,9 @@ jobs:
         shell: bash
         run: |
           echo "Output [${{ steps.installed_qt_default.outputs.qt-path }}]"
+          echo "json [${{ toJson(steps.installed_qt_default.outputs) }}]"
+          echo "json [${{ toJson(steps.installed_qt_default) }}]"
+          echo "json [${{ toJson(steps) }}]"
           [[ -n "${{ steps.installed_qt_default.outputs.qt-path }}" ]]
 
       - name: Install Qt with options and specified aqtversion
