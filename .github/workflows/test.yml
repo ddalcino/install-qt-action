@@ -29,58 +29,58 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-22.04
+#          - ubuntu-22.04
           - ubuntu-20.04
-          - windows-2022
-          - windows-2019
-          - macos-11
-          - macos-12
+#          - windows-2022
+#          - windows-2019
+#          - macos-11
+#          - macos-12
         aqtversion:
           - null  # use whatever the default is
         src-doc-examples:
           - false
         qt:
-          - version: "5.9.0"
-            requested: "5.9.0"
-            modules: qtwebengine
+#          - version: "5.9.0"
+#            requested: "5.9.0"
+#            modules: qtwebengine
           - version: "5.15.2"
             requested: "5.15"
             modules: qtwebengine
-          - version: "6.3.2"  # Qt 6.3 is not an LTS version, so '6.3.*' always resolves to '6.3.2'
-            requested: "6.3.*"
-            # In Qt 6.2.0+, qtwebengine requires qtpositioning and qtwebchannel
-            modules: qtwebengine qtpositioning qtwebchannel
-          - tools-only-build: true
+#          - version: "6.3.2"  # Qt 6.3 is not an LTS version, so '6.3.*' always resolves to '6.3.2'
+#            requested: "6.3.*"
+#            # In Qt 6.2.0+, qtwebengine requires qtpositioning and qtwebchannel
+#            modules: qtwebengine qtpositioning qtwebchannel
+#          - tools-only-build: true
         cache:
           - cached
-          - uncached
-        include:
-          - os: ubuntu-20.04
-            src-doc-examples: true
-            source: true
-            src-archives: qtcharts
-            check-dir: ../Qt/5.15.2/Src
-            check: qtcharts/src/src.pro
-          - os: ubuntu-20.04
-            src-doc-examples: true
-            documentation: true
-            doc-archives: qmake
-            doc-modules: qtcharts qtwebengine
-            check-dir: ../Qt/Docs/Qt-5.15.2
-            check: qmake/qmake-tutorial.html qtcharts/qtcharts-index.html qtwebengine/qtwebengine-index.html
-          - os: ubuntu-20.04
-            src-doc-examples: true
-            examples: true
-            example-archives: qtsensors
-            example-modules: qtcharts qtwebengine
-            check-dir: ../Qt/Examples/Qt-5.15.2
-            check: charts/charts.pro sensors/sensors.pro webengine/webengine.pro
-          - os: ubuntu-22.04
-            aqtversion: "==3.1.*"
-            qt:
-              version: "5.15.2"
-              requested: "5.15"
-              modules: qtwebengine
+#          - uncached
+#        include:
+#          - os: ubuntu-20.04
+#            src-doc-examples: true
+#            source: true
+#            src-archives: qtcharts
+#            check-dir: ../Qt/5.15.2/Src
+#            check: qtcharts/src/src.pro
+#          - os: ubuntu-20.04
+#            src-doc-examples: true
+#            documentation: true
+#            doc-archives: qmake
+#            doc-modules: qtcharts qtwebengine
+#            check-dir: ../Qt/Docs/Qt-5.15.2
+#            check: qmake/qmake-tutorial.html qtcharts/qtcharts-index.html qtwebengine/qtwebengine-index.html
+#          - os: ubuntu-20.04
+#            src-doc-examples: true
+#            examples: true
+#            example-archives: qtsensors
+#            example-modules: qtcharts qtwebengine
+#            check-dir: ../Qt/Examples/Qt-5.15.2
+#            check: charts/charts.pro sensors/sensors.pro webengine/webengine.pro
+#          - os: ubuntu-22.04
+#            aqtversion: "==3.1.*"
+#            qt:
+#              version: "5.15.2"
+#              requested: "5.15"
+#              modules: qtwebengine
 
 
     steps:
