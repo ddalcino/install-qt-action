@@ -115,7 +115,8 @@ jobs:
         if: ${{ !matrix.aqtversion && matrix.qt.version }}
         shell: bash
         run: |
-          echo "Output ${{ steps.installed_qt_default.outputs.qtPath }}"
+          echo "Output [${{ steps.installed_qt_default.outputs.qt-path }}]"
+          [[ -n "${{ steps.installed_qt_default.outputs.qt-path }}" ]]
 
       - name: Install Qt with options and specified aqtversion
         if: ${{ matrix.aqtversion && matrix.qt.version }}
