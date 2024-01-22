@@ -271,6 +271,7 @@ class Inputs {
 }
 
 const run = async (): Promise<void> => {
+  core.setOutput("banana", "tasty");
   try {
     const inputs = new Inputs();
 
