@@ -409,6 +409,7 @@ const run = async (): Promise<void> => {
       }
       if (inputs.isInstallQtBinaries) {
         const qtPath = nativePath(locateQtArchDir(inputs.dir));
+        console.log(`Set qt-path to ${qtPath}`);
         core.setOutput("qt-path", qtPath);
         if (process.platform === "linux") {
           setOrAppendEnvVar("LD_LIBRARY_PATH", nativePath(`${qtPath}/lib`));
