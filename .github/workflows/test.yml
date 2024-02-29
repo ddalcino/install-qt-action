@@ -24,6 +24,7 @@ jobs:
           set -exuo pipefail
           cd action
           npm run lint
+        shell: bash
 
   test:
     runs-on: ${{ matrix.os }}
@@ -104,6 +105,7 @@ jobs:
           set -exuo pipefail
           cd action
           npm run build
+        shell: bash
 
       - name: Install Qt with options and default aqtversion
         if: ${{ !matrix.aqtversion && matrix.qt.version }}
