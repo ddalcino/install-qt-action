@@ -14,13 +14,15 @@ jobs:
           cache: npm
           cache-dependency-path: action/
 
-      - run: |
+      - name: npm ci || npm install
+        run: |
           set -exuo pipefail
           cd action
           npm ci || npm install
         shell: bash
 
-      - run: |
+      - name: lint
+        run: |
           set -exuo pipefail
           cd action
           npm run lint
@@ -95,13 +97,15 @@ jobs:
           cache: npm
           cache-dependency-path: action/
 
-      - run: |
+      - name: npm ci || npm install
+        run: |
           set -exuo pipefail
           cd action
           npm ci || npm install
         shell: bash
 
-      - run: |
+      - name: build
+        run: |
           set -exuo pipefail
           cd action
           npm run build
