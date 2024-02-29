@@ -15,11 +15,13 @@ jobs:
           cache-dependency-path: action/
 
       - run: |
+          set -exuo pipefail
           cd action
           npm ci || npm install
         shell: bash
 
       - run: |
+          set -exuo pipefail
           cd action
           npm run lint
 
@@ -93,11 +95,13 @@ jobs:
           cache-dependency-path: action/
 
       - run: |
+          set -exuo pipefail
           cd action
           npm ci || npm install
         shell: bash
 
       - run: |
+          set -exuo pipefail
           cd action
           npm run build
 
@@ -136,6 +140,7 @@ jobs:
         env:
           QT_VERSION: ${{ matrix.qt.version }}
         run: |
+          set -exuo pipefail
           cd tests/TestWithModules
           if [[ $QT_VERSION == 6* ]]; then
             ls "$Qt6_DIR/lib/cmake"
@@ -178,6 +183,7 @@ jobs:
         if: ${{ matrix.src-doc-examples }}
         shell: bash
         run: |
+          set -exuo pipefail
           cd ${{ matrix.check-dir }}
           ls ${{ matrix.check }}
 
@@ -196,6 +202,7 @@ jobs:
           QTCREATOR_BIN_PATH: ${{ startsWith(matrix.os, 'macos') && '../Qt/Qt Creator.app/Contents/MacOS/' || '../Qt/Tools/QtCreator/bin/' }}
         shell: bash
         run: |
+          set -exuo pipefail
           # Check if QtIFW is installed
           ls ../Qt/Tools/QtInstallerFramework/*/bin/
           ../Qt/Tools/QtInstallerFramework/*/bin/archivegen --version
