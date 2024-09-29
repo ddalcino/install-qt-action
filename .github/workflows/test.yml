@@ -220,7 +220,8 @@ jobs:
         shell: bash
         run: |
           echo "Path: ${PATH}"
-          
+          set -x
+
           # tools_ifw: use `archivegen` to test that Tools/QtInstallerFramework/4.7/bin is added to path
           # tools_qtcreator: use `qbs` to test that Tools/QtCreator/bin or "Qt Creator.app/Contents/MacOS/" is added to path
           # tools_cmake: test that Tools/CMake/bin or Tools/CMake/CMake.app/Contents/bin is added to path
@@ -238,6 +239,8 @@ jobs:
         shell: bash
         run: |
           echo "Path: ${PATH}"
+          set -x
+
           # Check that QtIFW has been installed
           ls ../Qt/Tools/QtInstallerFramework/*/bin/ | grep archivegen
           # Check that QtCreator has been installed
