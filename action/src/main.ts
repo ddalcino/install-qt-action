@@ -34,8 +34,8 @@ const dirExists = (dir: string): boolean => {
   }
 };
 
-// binlessToolDirectories: names of directories for tools (tools_conan & tools_ninja) that include binaries
-// in the base directory instead of a bin directory (ie 'Tools/Conan', not 'Tools/Conan/bin')
+// Names of directories for tools (tools_conan & tools_ninja) that include binaries in the
+// base directory instead of a bin directory (ie 'Tools/Conan', not 'Tools/Conan/bin')
 const binlessToolDirectories = ["Conan", "Ninja"];
 
 const toolsPaths = (installDir: string): string[] => {
