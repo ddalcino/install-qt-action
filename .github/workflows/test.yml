@@ -131,6 +131,7 @@ jobs:
 
       - name: Test QT_ROOT_DIR
         if: ${{ matrix.qt.version }}
+        shell: bash
         run: |
           set -x
           # Check that QT_ROOT_DIR contains a qmake of some kind
