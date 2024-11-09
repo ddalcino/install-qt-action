@@ -121,6 +121,7 @@ jobs:
           version: ${{ matrix.qt.requested }}
           tools: tools_ifw tools_qtcreator,qt.tools.qtcreator
           cache: ${{ matrix.cache == 'cached' }}
+          dir: '/'
 
       - name: Install Qt with options and specified aqtversion
         if: ${{ matrix.aqtversion && matrix.qt.version }}
@@ -131,6 +132,7 @@ jobs:
           version: ${{ matrix.qt.requested }}
           tools: tools_ifw tools_qtcreator,qt.tools.qtcreator
           cache: ${{ matrix.cache == 'cached' }}
+          dir: '/'
 
       - name: Test QT_ROOT_DIR
         if: ${{ matrix.qt.version }}
